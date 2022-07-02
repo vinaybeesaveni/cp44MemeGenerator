@@ -9,6 +9,8 @@ import {
   Option,
   Button,
   MemeContainer,
+  Text,
+  Form,
 } from './styledComponents'
 
 const fontSizesOptionsList = [
@@ -46,8 +48,8 @@ class MemeGenerator extends Component {
     imageUrl: '',
     topText: '',
     bottomText: '',
-    fontSize: '',
-    showMeme: true,
+    fontSize: fontSizesOptionsList[0].optionId,
+    showMeme: false,
   }
 
   onUrlChange = event => {
@@ -66,70 +68,78 @@ class MemeGenerator extends Component {
     this.setState({fontSize: event.target.value})
   }
 
-  showMeme = () => {
+  showMeme = event => {
+    event.preventDefault()
     this.setState({showMeme: true})
   }
 
   generateMeme = () => {
     const {imageUrl, topText, bottomText, fontSize} = this.state
     return (
-      <MemeContainer imageUrl={imageUrl}>
-        <h1>Hi</h1>
+      <MemeContainer imageUrl={imageUrl} data-testid="meme">
+        <Text fontSize={fontSize}>{topText}</Text>
+        <Text fontSize={fontSize}>{bottomText}</Text>
       </MemeContainer>
     )
   }
 
   render() {
-    const {showMeme} = this.state
+    const {showMeme, imageUrl, topText, bottomText, fontSize} = this.state
     return (
       <MainContainer>
         <MainHeading>Meme Generator</MainHeading>
-        {showMeme && this.generateMeme()}
-        <InputContainer>
-          <Label htmlFor="image-url">Image Url</Label>
-          <Input
-            id="image-url"
-            type="text"
-            placeholder="Enter the Image URL"
-            onChange={this.onUrlChange}
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label htmlFor="top-text">Top Text</Label>
-          <Input
-            id="top-text"
-            type="text"
-            placeholder="Enter the Top Text"
-            onChange={this.onTopTextChange}
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label htmlFor="bottom-text">Bottom Text</Label>
-          <Input
-            id="bottom-text"
-            type="text"
-            placeholder="Enter the Bottom Text"
-            onChange={this.onBottomTextChange}
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label htmlFor="font-size">Bottom Text</Label>
-          <Select
-            id="font-size"
-            type="select"
-            placeholder="Enter the Bottom Text"
-            onChange={this.onFontSizeChange}
-          >
-            {fontSizesOptionsList.map(each => (
-              <Option key={each.optionId} value={each.optionId}>
-                {each.displayText}
-              </Option>
-            ))}
-          </Select>
-        </InputContainer>
-        <Button type="button" onClick={this.showMeme}>
-          Generate
-        </Button>
+        <Form onSubmit={this.showMeme}>
+          {showMeme && this.generateMeme()}
+          <div>
+            <InputContainer>
+              <Label htmlFor="image-url">Image Url</Label>
+              <Input
+                id="image-url"
+                type="text"
+                placeholder="Enter the Image URL"
+                onChange={this.onUrlChange}
+                value={imageUrl}
+              />
+            </InputContainer>
+            <InputContainer>
+              <Label htmlFor="top-text">Top Text</Label>
+              <Input
+                id="top-text"
+                type="text"
+                placeholder="Enter the Top Text"
+                onChange={this.onTopTextChange}
+                value={topText}
+              />
+            </InputContainer>
+            <InputContainer>
+              <Label htmlFor="bottom-text">Bottom Text</Label>
+              <Input
+                id="bottom-text"
+                type="text"
+                placeholder="Enter the Bottom Text"
+                value={bottomText}
+                onChange={this.onBottomTextChange}
+              />
+            </InputContainer>
+            <InputContainer>
+              <Label htmlFor="font-size">Font Size</Label>
+              <Select
+                id="font-size"
+                type="select"
+                placeholder="Enter the Bottom Text"
+                onChange={this.onFontSizeChange}
+                value={fontSize}
+              >
+                {fontSizesOptionsList.map(each => (
+                  <Option key={each.optionId} value={each.optionId}>
+                    {each.displayText}
+                  </Option>
+                ))}
+              </Select>
+            </InputContainer>
+            <Button type="submit">Generate</Button>
+          </div>
+        </Form>
       </MainContainer>
     )
   }
